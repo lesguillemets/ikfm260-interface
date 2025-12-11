@@ -1,7 +1,8 @@
 import polars as pl
 from pathlib import Path
+
+from ikfm260_interface.base import add_file_info
 from ikfm260_interface.consts import CONDITION1_MAP, CONDITION2_MAP, EMOTION_MAP
-from ikfm260_interface.filehandle.base import get_id_from_filename
 
 
 def read_qr_data(file_path: Path) -> pl.DataFrame:
@@ -26,17 +27,12 @@ def read_qr_data(file_path: Path) -> pl.DataFrame:
     )
 
     # Add some helpful transformations
-    participant_id = get_id_from_filename(file_path)
-    df = df.with_columns(
+    df = add_file_info(df, file_path, "qr").with_columns(
         [
             # Create meaningful condition labels using dictionary mapping
             pl.col("condition1").replace_strict(CONDITION1_MAP).alias("VisualFeedback"),
             pl.col("condition2").replace_strict(CONDITION2_MAP).alias("Reference"),
             pl.col("emotion").replace_strict(EMOTION_MAP).alias("emotion_str"),
-            # participant id is taken from the file name
-            pl.lit(participant_id).alias("participant_id"),
-            # add which file the data came from
-            pl.lit(file_path.name).alias("qr_file_name"),
         ]
     )
 

@@ -1,7 +1,7 @@
 import polars as pl
 from pathlib import Path
+from ikfm260_interface.base import add_file_info
 from ikfm260_interface.consts import CONDITION1_MAP, CONDITION2_MAP, EMOTION_MAP
-from ikfm260_interface.filehandle.base import get_id_from_filename
 
 
 def read_va_data(file_path: Path) -> pl.DataFrame:
@@ -25,8 +25,7 @@ def read_va_data(file_path: Path) -> pl.DataFrame:
     )
 
     # Add some helpful transformations
-    participant_id = get_id_from_filename(file_path)
-    df = df.with_columns(
+    df = add_file_info(df, file_path, "va_tsv").with_columns(
         [
             pl.col("x").cast(pl.Int8),
             pl.col("y").cast(pl.Int8),
@@ -37,10 +36,6 @@ def read_va_data(file_path: Path) -> pl.DataFrame:
             pl.col("emotion").replace_strict(EMOTION_MAP).alias("emotion_str"),
             # Add distance from origin
             (pl.col("x") ** 2 + pl.col("y") ** 2).sqrt().alias("distance_from_origin"),
-            # participant id is taken from the file name
-            pl.lit(participant_id).alias("participant_id"),
-            # add which file the data came from
-            pl.lit(file_path.name).alias("va_tsv_file_name"),
         ]
     )
 

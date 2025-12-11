@@ -3,8 +3,8 @@ from pathlib import Path
 import numpy as np
 import polars as pl
 
-from ikfm260_interface.filehandle.base import get_id_from_filename
 from ikfm260_interface.filehandle.mesh_numpy import is_denormed_file
+from ikfm260_interface.base import add_file_info
 
 
 def load_mesh_data(f: Path) -> pl.DataFrame:
@@ -13,16 +13,11 @@ def load_mesh_data(f: Path) -> pl.DataFrame:
     """
     dat = np.load(f)
     is_denorm = is_denormed_file(f)
-    participant_id = get_id_from_filename(f)
 
     df = numpy_landmarks_to_df(dat)
+    df = add_file_info(df, f, "mesh")
     return df.with_columns(
-        [
-            pl.lit(is_denorm).alias("is_denorm"),
-            pl.lit(participant_id).alias("participant_id"),
-            # add which file the data came from
-            pl.lit(f.name).alias("mesh_file_name"),
-        ]
+        pl.lit(is_denorm).alias("is_denorm"),
     )
 
 
