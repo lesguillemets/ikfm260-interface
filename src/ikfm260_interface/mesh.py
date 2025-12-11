@@ -3,8 +3,8 @@ from pathlib import Path
 import numpy as np
 import polars as pl
 
+from ikfm260_interface.filehandle.base import get_id_from_filename
 from ikfm260_interface.filehandle.mesh_numpy import is_denormed_file
-from ikfm260_interface.filehandle import get_id_from_filename
 
 
 def load_mesh_data(f: Path) -> pl.DataFrame:

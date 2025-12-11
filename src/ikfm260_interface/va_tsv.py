@@ -1,7 +1,7 @@
 import polars as pl
 from pathlib import Path
 from ikfm260_interface.consts import CONDITION1_MAP, CONDITION2_MAP, EMOTION_MAP
-from ikfm260_interface.filehandle import get_id_from_filename
+from ikfm260_interface.filehandle.base import get_id_from_filename
 
 
 def read_va_data(file_path: Path) -> pl.DataFrame:
