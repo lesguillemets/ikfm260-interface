@@ -1,0 +1,26 @@
+[project]
+name = "ikfm260-interface"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "lesguillemets", email = "kgkacko+github@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "numpy>=2.3.5",
+    "polars>=1.36.1",
+]
+
+[project.scripts]
+ikfm260-interface = "ikfm260_interface:main"
+
+[build-system]
+requires = ["uv_build>=0.9.16,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.407",
+    "ruff>=0.14.8",
+]
