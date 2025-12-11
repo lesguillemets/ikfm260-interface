@@ -32,7 +32,7 @@ def numpy_landmarks_to_df(dat: np.ndarray) -> pl.DataFrame:
     # lm_0_x, lm_0_y, ...
     col_names = [f"lm_{coord}_{i}" for i in range(n_landmarks) for coord in "xyz"]
     df = pl.from_numpy(reshaped, schema=col_names)
-    df = df.with_columns(pl.Series("frame", range(n_frames)))
+    df = df.with_columns(pl.Series("Frame", range(1, n_frames + 1)))
     return df
 
 
