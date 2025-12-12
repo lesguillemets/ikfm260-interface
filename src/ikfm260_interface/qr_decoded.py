@@ -5,7 +5,7 @@ from ikfm260_interface.base import add_file_info
 from ikfm260_interface.consts import CONDITION1_MAP, CONDITION2_MAP, EMOTION_MAP
 
 
-def read_qr_data(file_path: Path) -> pl.DataFrame:
+def load_qr_data(file_path: Path) -> pl.DataFrame:
     """
     Reads facemimic TSV data nicely
     file_path: Path to the TSV file
@@ -46,7 +46,7 @@ def read_qr_files(files: list[Path]) -> pl.DataFrame:
     """
     dfs = []
     for file in files:
-        df = read_qr_data(file)
+        df = load_qr_data(file)
         dfs.append(df)
     combined_df = pl.concat(dfs, how="vertical")
     return combined_df
