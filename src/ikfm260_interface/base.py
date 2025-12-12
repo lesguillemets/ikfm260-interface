@@ -2,6 +2,7 @@ from pathlib import Path
 import polars as pl
 
 from ikfm260_interface.filehandle.base import get_id_from_filename
+from ikfm260_interface.consts import CONDITION1_MAP, CONDITION2_MAP, EMOTION_MAP
 
 
 def gen_file_info_expr(source_file: Path, file_kind: str) -> list[pl.Expr]:
@@ -16,3 +17,11 @@ def gen_file_info_expr(source_file: Path, file_kind: str) -> list[pl.Expr]:
 
 def add_file_info(df: pl.DataFrame, source_file: Path, file_kind: str) -> pl.DataFrame:
     return df.with_columns(gen_file_info_expr(source_file, file_kind))
+
+
+COND_EMO_MAP_EXPR: list[pl.Expr] = [
+    # Create meaningful condition labels using dictionary mapping
+    pl.col("condition1").replace_strict(CONDITION1_MAP).alias("VisualFeedback"),
+    pl.col("condition2").replace_strict(CONDITION2_MAP).alias("Reference"),
+    pl.col("emotion").replace_strict(EMOTION_MAP).alias("emotion_str"),
+]

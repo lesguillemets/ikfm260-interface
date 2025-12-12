@@ -1,8 +1,7 @@
 import polars as pl
 from pathlib import Path
 
-from ikfm260_interface.base import gen_file_info_expr
-from ikfm260_interface.consts import CONDITION1_MAP, CONDITION2_MAP, EMOTION_MAP
+from ikfm260_interface.base import gen_file_info_expr, COND_EMO_MAP_EXPR
 
 
 QR_SCHEMA_OVERRIDES = {
@@ -30,15 +29,7 @@ def load_qr_data(file_path: Path) -> pl.LazyFrame:
     )
 
     # Add some helpful transformations
-    df = df.with_columns(
-        [
-            # Create meaningful condition labels using dictionary mapping
-            pl.col("condition1").replace_strict(CONDITION1_MAP).alias("VisualFeedback"),
-            pl.col("condition2").replace_strict(CONDITION2_MAP).alias("Reference"),
-            pl.col("emotion").replace_strict(EMOTION_MAP).alias("emotion_str"),
-        ]
-        + gen_file_info_expr(file_path, "qr")
-    )
+    df = df.with_columns(COND_EMO_MAP_EXPR + gen_file_info_expr(file_path, "qr"))
 
     return df
 
