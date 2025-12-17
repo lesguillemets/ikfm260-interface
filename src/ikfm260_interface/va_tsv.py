@@ -45,8 +45,11 @@ def read_va_data(file_path: Path) -> pl.LazyFrame:
 def read_va_files(files: list[Path]) -> pl.DataFrame:
     """
     まとめてデータとして読む（被験者IDはファイル名から取って追記する）
+    Uses lazy evaluation internally for better performance and memory efficiency.
+    All files are scanned lazily, transformations are applied, then collected once.
+
     files: list[Path] to the TSV files
-    Returns: Collected DataFrame after lazy operations
+    Returns: Collected DataFrame after lazy operations are optimized and executed
     """
     dfs = []
     for file in files:
