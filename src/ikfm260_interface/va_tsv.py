@@ -4,13 +4,13 @@ from ikfm260_interface.base import add_file_info
 from ikfm260_interface.consts import CONDITION1_MAP, CONDITION2_MAP, EMOTION_MAP
 
 
-def read_va_data(file_path: Path) -> pl.DataFrame:
+def read_va_data(file_path: Path) -> pl.LazyFrame:
     """
-    Reads facemimic TSV data nicely
+    Reads facemimic TSV data nicely (returns LazyFrame for better performance)
     file_path: Path to the TSV file
     """
 
-    df = pl.read_csv(
+    df = pl.scan_csv(
         file_path,
         separator="\t",
         schema_overrides={
@@ -45,14 +45,18 @@ def read_va_data(file_path: Path) -> pl.DataFrame:
 def read_va_files(files: list[Path]) -> pl.DataFrame:
     """
     まとめてデータとして読む（被験者IDはファイル名から取って追記する）
+    Uses lazy evaluation internally for better performance and memory efficiency.
+    All files are scanned lazily, transformations are applied, then collected once.
+
     files: list[Path] to the TSV files
+    Returns: Collected DataFrame after lazy operations are optimized and executed
     """
     dfs = []
     for file in files:
         df = read_va_data(file)
         dfs.append(df)
     combined_df = pl.concat(dfs, how="vertical")
-    return combined_df
+    return combined_df.collect()
 
 
 if __name__ == "__main__":
