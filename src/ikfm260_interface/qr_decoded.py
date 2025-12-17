@@ -38,10 +38,11 @@ def read_qr_files(files: list[Path]) -> pl.DataFrame:
     """
     まとめてデータとして読む（被験者IDはファイル名から取って追記する）
     files: list[Path] to the TSV files
+    Returns: Collected DataFrame after lazy operations
     """
     dfs = []
     for file in files:
         df = load_qr_data(file)
         dfs.append(df)
     combined_df = pl.concat(dfs, how="vertical")
-    return combined_df
+    return combined_df.collect()

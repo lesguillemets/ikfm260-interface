@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import overload
 import polars as pl
 
 from ikfm260_interface.filehandle.base import get_id_from_filename
@@ -15,7 +16,21 @@ def gen_file_info_expr(source_file: Path, file_kind: str) -> list[pl.Expr]:
     ]
 
 
-def add_file_info(df: pl.DataFrame, source_file: Path, file_kind: str) -> pl.DataFrame:
+@overload
+def add_file_info(
+    df: pl.DataFrame, source_file: Path, file_kind: str
+) -> pl.DataFrame: ...
+
+
+@overload
+def add_file_info(
+    df: pl.LazyFrame, source_file: Path, file_kind: str
+) -> pl.LazyFrame: ...
+
+
+def add_file_info(
+    df: pl.DataFrame | pl.LazyFrame, source_file: Path, file_kind: str
+) -> pl.DataFrame | pl.LazyFrame:
     return df.with_columns(gen_file_info_expr(source_file, file_kind))
 
 
